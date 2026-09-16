@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nota Toko Online - Toko Susan</title>
+
+<style>
+  :root {
+    --ink: #111111;
+    --muted: #444444;
+    --line: #b0b0b0;
+    --accent: #1f6f5c;
+    --bg: #f3ede0;
+    --paper: #ffffff;
+  }
+
+  * { box-sizing: border-box; font-family: 'Georgia', serif; }
+  body { background: var(--bg); padding: 10px; margin: 0; display: flex; flex-direction: column; align-items: center; }
+  
+  .action-bar { width: 100%; max-width: 750px; margin-bottom: 12px; display: flex; gap: 8px; }
+  .btn { padding: 10px 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 13px; }
+  .btn-print { background: var(--accent); color: white; flex: 1; }
+  .btn-camera { background: #2c7a7b; color: white; }
+  .btn-reset { background: white; color: var(--ink); border: 1px solid var(--line); }
+
+  .nota-wrapper {
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nota-card { 
+    background: var(--paper); 
+    width: 100%; 
+    padding: 16px; 
+    border-radius: 6px; 
+    border: 2px solid #000000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    color: var(--ink);
+    position: relative;
+  }
+
+  /* GARIS PANDUAN POTONG */
+  .cut-guide {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    width: 100%;
+    color: #777777;
+    font-size: 12px;
+  }
+  .cut-guide-line {
+    flex: 1;
+    border-bottom: 1px dashed #888888;
+    height: 1px;
+  }
+
+  .header { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    border-bottom: 2px solid var(--accent); 
+    padding-bottom: 8px; 
+    margin-bottom: 6px; 
+    flex-wrap: wrap; 
+  }
+  
+  .logo-img { height: 85px; width: auto; object-fit: contain; flex-shrink: 0; }
+
+  .store-info { flex: 1; min-width: 160px; }
+  .store-info h2 { 
+    margin: 0; 
+    color: var(--accent); 
+    font-size: 28px; 
+    font-family: 'Montserrat', 'Poppins', 'Segoe UI', sans-serif;
+    font-weight: 900;
+    letter-spacing: 1px; 
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+  .store-info p { margin: 4px 0 0 0; font-size: 11px; font-weight: 700; color: var(--ink); line-height: 1.4; white-space: nowrap; }
+  
+  .nota-num-box { 
+    text-align: right; 
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+  }
+  .nota-title {
+    font-size: 28px; 
+    font-weight: 900;
+    color: #000; 
+    letter-spacing: 2px;
+    line-height: 1;
+    font-family: 'Montserrat', 'Poppins', sans-serif;
+  }
+
+  /* KOTAK NOMOR NOTA */
+  .nota-num-container {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 4px;
+    cursor: pointer;
+  }
+  .nota-prefix {
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--ink);
+    user-select: none;
+  }
+  .nota-num-input {
+    width: 60px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--ink);
+    border: none;
+    border-bottom: 1px dashed var(--line);
+    background: transparent;
+    padding: 2px 0;
+    outline: none;
+    font-family: 'Georgia', serif;
+    cursor: pointer;
+  }
+
+  .date-box-dropdown {
+    margin-top: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .date-box-dropdown select {
+    border: none;
+    border-bottom: 1px dashed var(--line);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+    padding: 1px 2px;
+    outline: none;
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  /* KOTAK INFORMASI PELANGGAN */
+  .customer-box {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+
+  .row-single { 
+    display: flex; 
+    gap: 16px; 
+    flex-wrap: wrap; 
+  }
+  
+  .cust-field { 
+    flex: 1; 
+    min-width: 220px; 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cust-field label { 
+    font-size: 11px; 
+    font-weight: bold; 
+    color: var(--accent); 
+    text-transform: uppercase; 
+    margin-bottom: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  input, textarea { 
+    width: 100%; 
+    padding: 2px 0; 
+    border: none; 
+    border-bottom: 1px dashed var(--line); 
+    background: transparent; 
+    font-size: 13px; 
+    color: var(--ink); 
+    outline: none;
+  }
+
+  #cust-name {
+    font-size: 13px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  #alamat-input {
+    font-size: 13px;
+    font-weight: bold;
+    color: #000;
+    resize: none;
+    height: 20px;
+    min-height: 20px;
+    font-family: inherit;
+    line-height: 1.3;
+    display: block;
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed; }
+  
+  th { 
+    font-size: 11.5px; 
+    text-transform: uppercase; 
+    border-top: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent); 
+    color: var(--accent); 
+    padding: 6px 3px; 
+    background: rgba(31, 111, 92, 0.05);
+    border-right: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  th:last-child { border-right: none; }
+
+  td { 
+    padding: 6px 3px; 
+    border-bottom: 1px dashed var(--line); 
+    border-right: 1px solid var(--line);
+    font-size: 13px;
+  }
+  td:last-child { border-right: none; }
+
+  /* LEBAR KOLOM DASAR: LAYAR DALAM & LANDSCAPE */
+  .col-item { width: auto; text-align: left; }
+  .col-qty { width: 36px; text-align: center; }
+  .col-harga { width: 105px; text-align: right; }
+  .col-jumlah { width: 110px; text-align: right; }
+  .col-action { width: 22px; text-align: center; }
+
+  input.item-name {
+    font-size: 13.5px;
+    font-weight: bold;
+    color: #000;
+    text-align: left;
+  }
+  input.qty {
+    font-size: 13px;
+    font-weight: bold;
+    color: #000;
+  }
+
+  .harga-input {
+    width: 100%;
+    text-align: right;
+    border: none;
+    border-bottom: 1px dashed var(--line);
+    background: transparent;
+    font-size: 13px;
+    font-weight: bold;
+    color: #000;
+    outline: none;
+    white-space: nowrap;
+  }
+  td.subtotal-cell {
+    text-align: right;
+    font-size: 13px;
+    font-weight: bold;
+    color: #000;
+    white-space: nowrap;
+  }
+
+  .btn-del { background: transparent; color: #d9534f; border: 1px solid #d9534f; border-radius: 3px; cursor: pointer; padding: 1px 3px; font-size: 11px; }
+  
+  .button-group { display: flex; gap: 8px; margin-top: 8px; }
+  .btn-add { background: transparent; color: var(--accent); border: 1px dashed var(--accent); flex: 1; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+  .btn-note { background: transparent; color: #555; border: 1px dashed #888; flex: 1; padding: 6px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+
+  /* CATATAN */
+  .note-row input.item-name {
+    font-style: italic !important;
+    font-weight: normal !important;
+    color: var(--muted) !important;
+    font-size: 12px !important;
+    padding-left: 14px !important;
+    text-align: left !important;
+  }
+
+  .totals-container { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .total-box { 
+    background: rgba(31, 111, 92, 0.08); 
+    border: 2px solid var(--accent);
+    padding: 6px 14px; 
+    border-radius: 4px; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    white-space: nowrap; 
+  }
+  .total-title { font-weight: bold; color: var(--accent); font-size: 13px; letter-spacing: 1px; }
+  .total-amount { font-weight: 900; color: var(--accent); font-size: 17px; }
+
+  /* FOOTER LAYOUT */
+  .footer-layout { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-top: 12px; 
+    gap: 15px; 
+    flex-wrap: nowrap; 
+  }
+  
+  .footer-left-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+    transition: margin-top 0.15s ease;
+  }
+
+  .footer-text { 
+    font-style: italic; 
+    font-size: 12px; 
+    color: var(--muted); 
+    max-width: 420px; 
+    width: 100%;
+    border: 1px dashed var(--line);
+    padding: 8px 10px;
+    border-radius: 4px;
+    line-height: 1.4;
+  }
+  
+  .signature-box { 
+    text-align: center; 
+    width: 170px; 
+    font-size: 12px; 
+    color: var(--ink); 
+    position: relative; 
+    margin-left: auto; 
+    flex-shrink: 0;
+  }
+  
+  .space-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 3px;
+    margin-bottom: 2px;
+  }
+  .btn-spasi {
+    background: #ffffff;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 10px;
+    border-radius: 3px;
+    padding: 1px 5px;
+    cursor: pointer;
+  }
+
+  .hormat-text {
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .signature-moveable-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stamp-space { 
+    height: 64px; 
+    transition: height 0.15s ease;
+  }
+  .signature-line { border-bottom: 1.5px solid var(--ink); width: 100%; margin-bottom: 4px; }
+  
+  .store-sign-name {
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-weight: bold;
+    font-size: 12.5px;
+    color: var(--ink);
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+    letter-spacing: 0.5px;
+  }
+
+  /* MODAL SIMPAN ARSIP */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+  }
+  .modal-box {
+    background: #ffffff;
+    border-radius: 8px;
+    max-width: 420px;
+    width: 100%;
+    padding: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .modal-box h3 { margin: 0; font-size: 16px; color: var(--accent); }
+  .modal-box img { max-height: 180px; object-fit: contain; border-radius: 4px; border: 1px solid var(--line); background: #fafafa; }
+  .modal-box label { font-size: 11px; color: var(--ink); }
+  .modal-input { border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font-size: 12px; font-family: inherit; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 5px; }
+
+  /* ==============================================================
+     PENYESUAIAN LAYAR DEPAN VERTIKAL (LEBAR <= 480PX)
+     ============================================================== */
+  @media screen and (max-width: 480px) {
+    .nota-card { padding: 12px 10px; }
+    
+    .cust-field { 
+      flex-direction: column; 
+      align-items: flex-start; 
+      gap: 2px; 
+      min-width: 130px; 
+    }
+    .cust-field label { margin-bottom: 2px; }
+
+    th { font-size: 10px; padding: 5px 2px; }
+    td { padding: 5px 2px; }
+    
+    .col-qty { width: 28px; }
+    .col-harga { width: 70px; }
+    .col-jumlah { width: 75px; }
+    .col-action { width: 18px; }
+    
+    input.item-name { font-size: 12.5px; }
+    input.qty { font-size: 12px; }
+    
+    .harga-input { 
+      font-size: 11px; 
+      white-space: normal; 
+      word-break: break-word; 
+    }
+    td.subtotal-cell { 
+      font-size: 11px; 
+      white-space: normal; 
+      word-break: break-word; 
+    }
+  }
+
+  /* ==============================================================
+     ATURAN CETAK (PRINT / SIMPAN PDF):
+     - MENTOK HABIS KE ATAS KERTAS
+     - GARIS BAWAH TANGGAL DIRAPATKAN MIKRO KE ATAS
+     - AREA PELANGGAN LEBIH RAMPIHG TANPA BERSATU
+     - BARIS ISIAN TABEL LEBIH PADAT
+     - FONT ISIAN TURUN 1 TINGKAT (HEADER KOLOM TETAP)
+     - KOTAK TOTAL PIPIH MENEMPEL PRESISI
+     ============================================================== */
+  @media print {
+    @page { 
+      size: A4 portrait; 
+      margin: 0 !important; 
+    }
+    
+    html, body { 
+      background: #ffffff !important; 
+      padding: 0 !important; 
+      margin: 0 !important; 
+      width: 100% !important; 
+      height: auto !important; 
+      display: block !important;
+    }
+    
+    .action-bar, .button-group, .btn-del, .space-controls, .modal-overlay, th:last-child, td:last-child { 
+      display: none !important; 
+    }
+
+    .nota-wrapper {
+      width: 95% !important;
+      max-width: 95% !important;
+      margin: 0 auto !important;
+    }
+    
+    .nota-card { 
+      box-shadow: none !important; 
+      border: 2px solid #000000 !important; 
+      border-radius: 0 !important;
+      width: 100% !important; 
+      max-width: 100% !important; 
+      padding: 2mm 6mm 4mm 6mm !important; 
+      background: #ffffff !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .cut-guide {
+      display: flex !important;
+      margin-top: 5mm !important;
+      color: #333333 !important;
+      font-size: 9px !important;
+      font-weight: bold !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .cut-guide-line {
+      border-bottom: 1px dashed #333333 !important;
+    }
+    
+    /* 1. HEADER & GARIS BAWAH TANGGAL MIKRO */
+    .header {
+      padding-bottom: 2px !important;
+      margin-bottom: 4px !important;
+    }
+
+    .logo-img { height: 50px !important; }
+    .store-info h2 { font-size: 20px !important; color: #1f6f5c !important; }
+    .store-info p { font-size: 9.5px !important; line-height: 1.3 !important; }
+    
+    .nota-title { font-size: 20px !important; }
+    .nota-prefix { font-size: 13px !important; }
+    .nota-num-input { font-size: 13px !important; width: 60px !important; }
+    
+    .date-box-dropdown { 
+      font-size: 11px !important; 
+      font-weight: 700 !important; 
+      color: #000000 !important; 
+      margin-top: 3px !important;
+    }
+    .date-box-dropdown select { 
+      font-size: 11px !important; 
+      font-weight: 700 !important; 
+      color: #000000 !important; 
+      border: none !important; 
+    }
+
+    /* 2. AREA PELANGGAN RAMPING (JARAK TERPISAH) */
+    .customer-box { 
+      padding: 1px 8px !important; 
+      margin-bottom: 3px !important; 
+      border: 1.5px solid #1f6f5c !important; 
+      background: transparent !important; 
+    }
+    .row-single { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      flex-wrap: nowrap !important; 
+      gap: 16px !important; 
+    }
+    .cust-field { 
+      display: flex !important; 
+      flex-direction: row !important; 
+      align-items: center !important; 
+      gap: 5px !important; 
+      flex: 1 !important; 
+    }
+    .cust-field label { 
+      font-size: 9.5px !important; 
+      margin-bottom: 0 !important; 
+      color: #1f6f5c !important; 
+      white-space: nowrap !important; 
+    }
+    input, textarea { padding: 0 !important; }
+    #cust-name { font-size: 12px !important; font-weight: bold !important; color: #000 !important; }
+    #alamat-input { height: auto !important; min-height: 15px !important; overflow: visible !important; font-size: 12px !important; font-weight: bold !important; color: #000 !important; }
+
+    table { margin-top: 3px !important; }
+    
+    /* 3. HEADER TABEL TETAP TEGAS */
+    th { 
+      font-size: 11px !important; 
+      padding: 4px 3px !important; 
+      text-align: center !important; 
+      color: #1f6f5c !important; 
+      border-top: 2px solid #1f6f5c !important;
+      border-bottom: 2px solid #1f6f5c !important;
+      border-right: 1px solid #b0b0b0 !important;
+      background: rgba(31, 111, 92, 0.05) !important;
+    }
+    th:first-child {
+      border-left: 2px solid #1f6f5c !important;
+    }
+    th:nth-last-child(2) { 
+      border-right: 2px solid #1f6f5c !important; 
+    }
+
+    /* 4. BARIS ISIAN DIRAPATKAN & FONT TURUN 1 TINGKAT */
+    td { 
+      padding: 2.5px 3px !important; 
+      border-right: 1px solid #b0b0b0 !important;
+    }
+    td:first-child {
+      border-left: 2px solid #1f6f5c !important;
+    }
+    td:nth-last-child(2) {
+      border-right: 2px solid #1f6f5c !important;
+    }
+
+    tbody#item-list tr:last-child td {
+      border-bottom: 2px solid #1f6f5c !important;
+    }
+
+    .col-qty { width: 38px !important; }
+    .col-harga { width: 105px !important; }
+    .col-jumlah { width: 110px !important; }
+
+    input.item-name { font-size: 11.5px !important; font-weight: bold !important; color: #000 !important; text-align: left !important; }
+    input.qty { font-size: 11px !important; font-weight: bold !important; }
+    .harga-input { font-size: 11px !important; font-weight: bold !important; border: none !important; white-space: nowrap !important; }
+    td.subtotal-cell { font-size: 11px !important; font-weight: bold !important; color: #000 !important; white-space: nowrap !important; }
+
+    .note-row input.item-name { 
+      font-size: 10px !important; 
+      font-style: italic !important; 
+      font-weight: normal !important; 
+      color: #444 !important; 
+      padding-left: 12px !important;
+      text-align: left !important;
+    }
+
+    /* 5. KOTAK TOTAL PIPIH DIRAPATKAN */
+    .totals-container { margin-top: 3px !important; }
+    
+    .total-box { 
+      padding: 2px 10px !important; 
+      border: 2px solid #1f6f5c !important; 
+      background: rgba(31, 111, 92, 0.05) !important; 
+    }
+    .total-title { font-size: 11.5px !important; color: #1f6f5c !important; }
+    .total-amount { font-size: 14.5px !important; color: #1f6f5c !important; }
+
+    .footer-layout { margin-top: 5px !important; gap: 12px !important; }
+    .footer-text { font-size: 9px !important; padding: 4px 8px !important; border: 1px solid #888 !important; max-width: 320px !important; }
+    
+    .signature-box { width: 140px !important; font-size: 10px !important; }
+    .signature-line { margin-bottom: 3px !important; border-bottom: 1.5px solid #000 !important; }
+    .store-sign-name { font-size: 11.5px !important; }
+
+    .header, .footer-layout { flex-wrap: nowrap !important; }
+    input::placeholder, textarea::placeholder { color: transparent !important; opacity: 0 !important; }
+    input, textarea, .store-sign-name { border: none !important; padding: 0 !important; }
+    tr.empty-row td { visibility: hidden !important; }
+    tr.empty-row { border-bottom: none !important; }
+    tr.note-row input.item-name:placeholder-shown { display: none !important; }
+    .store-info h2 { white-space: nowrap !important; }
+    .store-info p { white-space: nowrap !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="action-bar">
+  <button class="btn btn-print" onclick="cetakNota()">🖨️ Cetak / Simpan PDF</button>
+  <button class="btn btn-camera" onclick="document.getElementById('picInput').click()">📸 Foto Nota (Arsip)</button>
+  <button class="btn btn-reset" onclick="buatNotaBaru()">🔄 Nota Baru</button>
+  <input type="file" id="picInput" accept="image/*" capture="environment" style="display:none" onchange="prosesFotoNota(event)">
+</div>
+
+<div class="nota-wrapper">
+  <div class="nota-card">
+    <div class="header">
+      <svg class="logo-img" viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="150" cy="75" rx="140" ry="65" fill="#000" stroke="#888" stroke-width="8"/>
+        <text x="150" y="65" font-family="'Arial Black', Impact, sans-serif" font-weight="900" font-size="42" fill="#fff" text-anchor="middle">SUSAN</text>
+        <text x="150" y="90" font-family="'Brush Script MT', cursive, serif" font-style="italic" font-size="22" fill="#fff" text-anchor="middle">Special for you</text>
+        <line x1="60" y1="98" x2="240" y2="98" stroke="#fff" stroke-width="2"/>
+        <text x="150" y="115" font-family="sans-serif" font-size="12" fill="#fff" text-anchor="middle">HP. 0812 4240 2825</text>
+        <text x="150" y="130" font-family="sans-serif" font-size="11" fill="#fff" text-anchor="middle">Jln. Bougenfille - Timika</text>
+      </svg>
+      
+      <div class="store-info">
+        <h2>TOKO SUSAN</h2>
+        <p>Jl. Bougenville Mimika - Papua<br>Telp.081242402825</p>
+      </div>
+
+      <div class="nota-num-box">
+        <div class="nota-title">NOTA</div>
+        <div class="nota-num-container" onclick="mintaUbahNomorManual()">
+          <span class="nota-prefix">No.</span>
+          <input type="text" id="nota-num" class="nota-num-input" value="001" readonly>
+        </div>
+        
+        <div class="date-box-dropdown">
+          Mimika,&nbsp;
+          <select id="sel-tgl" onchange="playTick()"></select>
+          <select id="sel-bln" onchange="playTick()"></select>
+          <select id="sel-thn" onchange="playTick()"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- KOTAK PELANGGAN RAMPING -->
+    <div class="customer-box">
+      <div class="row-single">
+        <div class="cust-field">
+          <label>KEPADA :</label>
+          <input type="text" id="cust-name" placeholder="Nama pelanggan">
+        </div>
+        <div class="cust-field">
+          <label>ALAMAT / NO. WA :</label>
+          <textarea id="alamat-input" rows="1" placeholder="(Opsional)"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="col-item">NAMA BARANG</th>
+          <th class="col-qty">QTY</th>
+          <th class="col-harga">HARGA</th>
+          <th class="col-jumlah">JUMLAH</th>
+          <th class="col-action"></th>
+        </tr>
+      </thead>
+      <tbody id="item-list">
+        <tr>
+          <td><input type="text" class="item-name" placeholder="Nama barang" oninput="hitung()"></td>
+          <td><input type="number" class="qty" value="" style="text-align:center" onfocus="fokusQty(this)" oninput="hitung()" onblur="hitung()"></td>
+          <td>
+            <input type="text" class="harga-input" data-raw="0" value="Rp. 0" onfocus="fokusHarga(this)" oninput="inputHargaLangsung(this)" onblur="blurHarga(this)">
+          </td>
+          <td class="subtotal-cell">Rp. 0</td>
+          <td style="text-align:center"><button class="btn-del" onclick="hapusBaris(this)">X</button></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="button-group">
+      <button class="btn-add" onclick="tambahBaris()">+ Tambah Barang</button>
+      <button class="btn-note" onclick="tambahCatatan()">+ Catatan</button>
+    </div>
+
+    <div class="totals-container">
+      <div class="total-box">
+        <span class="total-title">TOTAL</span>
+        <span class="total-amount" id="grand-total">Rp. 0</span>
+      </div>
+    </div>
+
+    <div class="footer-layout">
+      <div class="footer-left-group" id="footer-group">
+        <div class="footer-text">
+          Barang yg sudah dibeli tidak dapat ditukar / dikembalikan<br>
+          kecuali ada perjanjian sebelumnya
+        </div>
+      </div>
+
+      <div class="signature-box">
+        <div class="space-controls">
+          <button class="btn-spasi" onclick="tambahSpasi(10)">+ Spasi</button>
+          <button class="btn-spasi" onclick="tambahSpasi(-10)">- Spasi</button>
+        </div>
+
+        <div class="hormat-text">Hormat kami,</div>
+
+        <div class="signature-moveable-group" id="ttd-group">
+          <div class="stamp-space" id="spasi-ttd"></div>
+          <div class="signature-line"></div>
+          <input type="text" class="store-sign-name" value="TOKO SUSAN">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GARIS PANDUAN POTONG DENGAN IKON GUNTING -->
+  <div class="cut-guide">
+    <span>✂ - - -</span>
+    <div class="cut-guide-line"></div>
+    <span>Gunting di sini</span>
+    <div class="cut-guide-line"></div>
+    <span>- - - ✂</span>
+  </div>
+</div>
+
+<!-- MODAL SIMPAN ARSIP -->
+<div class="modal-overlay" id="modalArsip">
+  <div class="modal-box">
+    <h3>Simpan Arsip Foto Nota</h3>
+    <img id="imgPreviewArsip" src="" alt="Pratinjau Nota">
+    
+    <div>
+      <label>Nama File Arsip:</label>
+      <input type="text" id="namaFileArsip" class="modal-input">
+    </div>
+
+    <div>
+      <label>Folder Penyimpanan:</label>
+      <div style="display: flex; gap: 6px; align-items: center; margin-top: 4px;">
+        <input type="text" id="namaFolderLokal" class="modal-input" readonly value="Belum dipilih" style="background:#f0f0f0; flex: 1;">
+        <button type="button" class="btn btn-reset" onclick="pilihFolderLokal()" style="padding: 6px 10px; font-size: 11px;">Ganti Folder</button>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn btn-reset" onclick="tutupModalArsip()">Batal</button>
+      <button type="button" class="btn btn-print" onclick="eksekusiSimpanArsip()">Simpan ke Folder</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let audioCtx = null;
+  function initAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+  document.addEventListener('click', initAudio, { once: true });
+  document.addEventListener('touchstart', initAudio, { once: true });
+
+  function playTick() {
+    initAudio();
+    try {
+      if (audioCtx && audioCtx.state === 'running') {
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.04);
+      }
+    } catch(e) {}
+  }
+
+  function formatDigit(num) {
+    return String(num).padStart(3, '0');
+  }
+
+  function formatRupiah(val) {
+    let num = parseInt(val, 10) || 0;
+    return 'Rp. ' + num.toLocaleString('id-ID');
+  }
+
+  function loadNomorNota() {
+    let lastNum = localStorage.getItem('toko_susan_nota_num');
+    if (!lastNum) {
+      lastNum = 1;
+      localStorage.setItem('toko_susan_nota_num', lastNum);
+    }
+    document.getElementById('nota-num').value = formatDigit(lastNum);
+  }
+
+  function mintaUbahNomorManual() {
+    let currentShown = document.getElementById('nota-num').value;
+    let konfirmasi = confirm("Apakah Anda ingin merubah nomor nota secara manual untuk nota ini saja?");
+    if (konfirmasi) {
+      let inputManual = prompt("Masukkan nomor nota khusus yang diinginkan:", currentShown);
+      if (inputManual !== null && inputManual.trim() !== '') {
+        let match = inputManual.match(/\d+/);
+        if (match) {
+          document.getElementById('nota-num').value = formatDigit(parseInt(match[0], 10));
+        }
+      }
+    }
+  }
+
+  function buatNotaBaru() {
+    let currentBase = parseInt(localStorage.getItem('toko_susan_nota_num')) || 1;
+    let nextNum = currentBase + 1;
+    localStorage.setItem('toko_susan_nota_num', nextNum);
+    document.getElementById('nota-num').value = formatDigit(nextNum);
+    
+    document.getElementById('cust-name').value = '';
+    document.getElementById('alamat-input').value = '';
+    document.getElementById('alamat-input').style.height = '20px';
+    
+    const tbody = document.getElementById('item-list');
+    tbody.innerHTML = `
+      <tr>
+        <td><input type="text" class="item-name" placeholder="Nama barang" oninput="hitung()"></td>
+        <td><input type="number" class="qty" value="" style="text-align:center" onfocus="fokusQty(this)" oninput="hitung()" onblur="hitung()"></td>
+        <td>
+          <input type="text" class="harga-input" data-raw="0" value="Rp. 0" onfocus="fokusHarga(this)" oninput="inputHargaLangsung(this)" onblur="blurHarga(this)">
+        </td>
+        <td class="subtotal-cell">Rp. 0</td>
+        <td style="text-align:center"><button class="btn-del" onclick="hapusBaris(this)">X</button></td>
+      </tr>
+    `;
+    
+    hitungDefaultSpasi();
+    hitung();
+  }
+
+  const selTgl = document.getElementById('sel-tgl');
+  const selBln = document.getElementById('sel-bln');
+  const selThn = document.getElementById('sel-thn');
+  const bulanNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const now = new Date();
+
+  for (let i = 1; i <= 31; i++) {
+    let opt = document.createElement('option');
+    opt.value = i; opt.innerText = i;
+    if (i === now.getDate()) opt.selected = true;
+    selTgl.appendChild(opt);
+  }
+
+  bulanNames.forEach((bln, idx) => {
+    let opt = document.createElement('option');
+    opt.value = bln; opt.innerText = bln;
+    if (idx === now.getMonth()) opt.selected = true;
+    selBln.appendChild(opt);
+  });
+
+  const currentYear = now.getFullYear();
+  for (let y = currentYear - 2; y <= currentYear + 5; y++) {
+    let opt = document.createElement('option');
+    opt.value = y; opt.innerText = y;
+    if (y === currentYear) opt.selected = true;
+    selThn.appendChild(opt);
+  }
+
+  const txtAlamat = document.getElementById('alamat-input');
+  txtAlamat.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
+
+  const SPASI_DEFAULT_PX = 64;
+  let SPASI_MIN = SPASI_DEFAULT_PX;
+
+  function hitungDefaultSpasi() {
+    const stampSpace = document.getElementById('spasi-ttd');
+    const footerGroup = document.getElementById('footer-group');
+    if (!stampSpace || !footerGroup) return;
+
+    SPASI_MIN = SPASI_DEFAULT_PX;
+    stampSpace.style.height = SPASI_MIN + 'px';
+    footerGroup.style.marginTop = '40px';
+    footerGroup.style.transform = 'none';
+  }
+
+  function tambahSpasi(val) {
+    const spaceEle = document.getElementById('spasi-ttd');
+    const footerGroup = document.getElementById('footer-group');
+
+    let currentHeight = parseInt(window.getComputedStyle(spaceEle).height) || SPASI_MIN;
+    
+    if (val < 0 && currentHeight <= SPASI_MIN) {
+      return;
+    }
+
+    let newHeight = Math.max(currentHeight + val, SPASI_MIN);
+    spaceEle.style.height = newHeight + 'px';
+
+    let offset = 40 + (newHeight - SPASI_MIN);
+    footerGroup.style.marginTop = offset + 'px';
+    footerGroup.style.transform = 'none';
+  }
+
+  function fokusQty(input) {
+    input.value = '';
+  }
+
+  function fokusHarga(input) {
+    let raw = parseInt(input.getAttribute('data-raw'), 10) || 0;
+    if (raw === 0) {
+      input.value = '';
+    } else {
+      input.select();
+    }
+  }
+
+  function inputHargaLangsung(input) {
+    let clean = input.value.replace(/\D/g, '');
+    let num = parseInt(clean, 10) || 0;
+    input.setAttribute('data-raw', num);
+    
+    if (clean === '') {
+      input.value = '';
+    } else {
+      input.value = formatRupiah(num);
+    }
+    hitung();
+  }
+
+  function blurHarga(input) {
+    let raw = parseInt(input.getAttribute('data-raw'), 10) || 0;
+    input.value = formatRupiah(raw);
+    hitung();
+  }
+
+  function inputCatatan(input) {
+    let val = input.value;
+    if (val === '-' || val === '- ') {
+      input.value = '';
+      return;
+    }
+    if (val.length > 0 && !val.startsWith('- ')) {
+      let clean = val.replace(/^[-–—\s]+/, '');
+      input.value = '- ' + clean;
+    }
+  }
+
+  function blurCatatan(input) {
+    if (input.value.trim() === '-' || input.value.trim() === '') {
+      input.value = '';
+    }
+  }
+
+  function hitung() {
+    let rows = document.querySelectorAll('#item-list tr');
+    let grandTotal = 0;
+
+    rows.forEach(row => {
+      if (row.classList.contains('note-row')) return;
+
+      let nameInput = row.querySelector('.item-name');
+      let qty = parseFloat(row.querySelector('.qty').value) || 0;
+      let hargaInput = row.querySelector('.harga-input');
+      let harga = parseFloat(hargaInput.getAttribute('data-raw')) || 0;
+      
+      let sub = qty * harga;
+      row.querySelector('.subtotal-cell').innerText = formatRupiah(sub);
+      
+      if ((!nameInput || nameInput.value.trim() === '') && sub === 0) {
+        row.classList.add('empty-row');
+      } else {
+        row.classList.remove('empty-row');
+      }
+
+      grandTotal += sub;
+    });
+
+    document.getElementById('grand-total').innerText = formatRupiah(grandTotal);
+  }
+
+  function tambahBaris() {
+    let tr = document.createElement('tr');
+    tr.classList.add('empty-row');
+    tr.innerHTML = `
+      <td><input type="text" class="item-name" placeholder="Nama barang" oninput="hitung()"></td>
+      <td><input type="number" class="qty" value="" style="text-align:center" onfocus="fokusQty(this)" oninput="hitung()" onblur="hitung()"></td>
+      <td>
+        <input type="text" class="harga-input" data-raw="0" value="Rp. 0" onfocus="fokusHarga(this)" oninput="inputHargaLangsung(this)" onblur="blurHarga(this)">
+      </td>
+      <td class="subtotal-cell">Rp. 0</td>
+      <td style="text-align:center"><button class="btn-del" onclick="hapusBaris(this)">X</button></td>
+    `;
+    document.getElementById('item-list').appendChild(tr);
+    hitung();
+  }
+
+  function tambahCatatan() {
+    let tr = document.createElement('tr');
+    tr.classList.add('note-row');
+    tr.innerHTML = `
+      <td><input type="text" class="item-name" placeholder="- Ketik catatan..." oninput="inputCatatan(this)" onblur="blurCatatan(this)"></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="text-align:center"><button class="btn-del" onclick="hapusBaris(this)">X</button></td>
+    `;
+    document.getElementById('item-list').appendChild(tr);
+  }
+
+  function hapusBaris(btn) {
+    let rows = document.querySelectorAll('#item-list tr');
+    if (rows.length > 1) {
+      btn.closest('tr').remove();
+      hitung();
+    }
+  }
+
+  function cetakNota() {
+    document.querySelectorAll('.harga-input').forEach(input => {
+      let raw = parseInt(input.getAttribute('data-raw'), 10) || 0;
+      input.value = formatRupiah(raw);
+    });
+    hitung();
+    window.print();
+  }
+
+  let fileBlobFoto = null;
+  let savedDirectoryHandle = null;
+
+  function prosesFotoNota(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    fileBlobFoto = file;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('imgPreviewArsip').src = e.target.result;
+
+      const numVal = document.getElementById('nota-num').value.trim();
+      const noNota = 'No_' + numVal;
+      const cust = document.getElementById('cust-name').value.trim().replace(/\s+/g, '_') || 'Pelanggan';
+      const tgl = document.getElementById('sel-tgl').value;
+      const bln = document.getElementById('sel-bln').value;
+      const thn = document.getElementById('sel-thn').value;
+
+      document.getElementById('namaFileArsip').value = `${noNota}_${tgl}-${bln}-${thn}_${cust}.jpg`;
+      
+      if (savedDirectoryHandle) {
+        document.getElementById('namaFolderLokal').value = savedDirectoryHandle.name;
+      }
+
+      document.getElementById('modalArsip').style.display = 'flex';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function pilihFolderLokal() {
+    if (window.showDirectoryPicker) {
+      try {
+        savedDirectoryHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+        document.getElementById('namaFolderLokal').value = savedDirectoryHandle.name;
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error(err);
+      }
+    } else {
+      alert("Browser ini mengarahkan pemilihan folder saat tombol Simpan ditekan.");
+    }
+  }
+
+  async function eksekusiSimpanArsip() {
+    if (!fileBlobFoto) return;
+
+    let fileName = document.getElementById('namaFileArsip').value.trim();
+    if (!fileName.toLowerCase().endsWith('.jpg') && !fileName.toLowerCase().endsWith('.jpeg')) {
+      fileName += '.jpg';
+    }
+
+    if (savedDirectoryHandle) {
+      try {
+        const fileHandle = await savedDirectoryHandle.getFileHandle(fileName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(fileBlobFoto);
+        await writable.close();
+        tutupModalArsip();
+        return;
+      } catch (e) {
+        console.warn("Gagal simpan ke folder tersimpan, beralih ke dialog file...", e);
+      }
+    }
+
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [{
+            description: 'Foto Nota',
+            accept: { 'image/jpeg': ['.jpg'] }
+          }]
+        });
+        const writable = await handle.createWritable();
+        await writable.write(fileBlobFoto);
+        await writable.close();
+        tutupModalArsip();
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(fileBlobFoto);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+    tutupModalArsip();
+  }
+
+  function tutupModalArsip() {
+    document.getElementById('modalArsip').style.display = 'none';
+    document.getElementById('picInput').value = '';
+    fileBlobFoto = null;
+  }
+
+  loadNomorNota();
+  hitung();
+  hitungDefaultSpasi();
+</script>
+
+</body>
+</html>
