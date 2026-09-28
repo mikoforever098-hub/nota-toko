@@ -1,8 +1,8 @@
 {
-  "id": "./invoice.html",
   "name": "Invoice Toko Susan",
   "short_name": "Invoice Toko",
   "start_url": "./invoice.html",
+  "scope": "./invoice.html",
   "display": "standalone",
   "background_color": "#f3ede0",
   "theme_color": "#1f6f5c",
