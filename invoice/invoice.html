@@ -4,15 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Invoice Starlink - Toko Susan</title>
-<link rel="manifest" href="./manifest-invoice.json">
-  <meta name="theme-color" content="#1f6f5c">
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js');
-      });
-    }
-  </script>
+
 <style>
   :root {
     --ink: #1a1a1a;
@@ -485,7 +477,7 @@
     outline: none;
   }
 
-  /* MEDIA PRINT: Margin aman tanpa zoom agar tidak terpotong */
+/* MEDIA PRINT: Hanya memperbaiki informasi pembayaran agar muncul saat dicetak */
   @media print {
     @page { 
       size: A4 portrait; 
@@ -498,9 +490,56 @@
       width: 100% !important; 
       height: 100% !important; 
     }
-    .action-bar, .button-group, .btn-del, .space-controls, .footer-dropdown-row, .customer-input-row, .btn-save-pay, th:last-child, td:last-child { 
+    
+    /* Sembunyikan tombol dan elemen non-cetak */
+    .action-bar, .button-group, .btn-del, .space-controls, .footer-dropdown-row, .customer-input-row, .btn-save-pay, .btn-action-cust, .btn-del-cust, th:last-child, td:last-child { 
       display: none !important; 
     }
+    
+    /* KECUALIKAN TABEL BANK AGAR KOLOM BCA & NO REK TIDAK IKUT TERSEMBUNYI */
+    .bank-table td:last-child {
+      display: table-cell !important;
+    }
+    
+    .nota-card { 
+      box-shadow: none !important; 
+      border: none !important; 
+      width: 100% !important; 
+      max-width: 100% !important; 
+      padding: 0 !important; 
+      transform: none !important; 
+    }
+    
+    .table-responsive { overflow: visible !important; }
+    table { min-width: 100% !important; }
+    .header, .customer-grid, .footer-layout { flex-wrap: nowrap !important; }
+    .customer-box { border: 1px solid var(--line) !important; background: transparent !important; }
+    .footer-left-group { max-width: 310px !important; margin-top: 85px !important; }
+    
+    .footer-text { 
+      border: 1px solid var(--line) !important; 
+      display: block !important; 
+      background: transparent !important; 
+    }
+    .bank-table { width: auto !important; }
+    .bank-table td { 
+      border: none !important; 
+      color: #1a1a1a !important; 
+      background: transparent !important; 
+    }
+    
+    .footer-custom-box { display: flex !important; }
+    .footer-custom-textarea { border: none !important; resize: none !important; height: auto !important; padding: 0 !important; background: transparent !important; }
+    th { background: transparent !important; }
+    input::placeholder, textarea::placeholder { color: transparent !important; opacity: 0 !important; }
+    .invoice-cycle-container select, .date-box-dropdown select, .satuan-select { border: none !important; appearance: none; background: transparent !important; }
+    input, textarea, .store-sign-name { border: none !important; padding: 0 !important; background: transparent !important; }
+    .harga-input { border: none !important; background: transparent !important; }
+    .total-box { background: transparent !important; border: 1px solid var(--accent) !important; }
+    tr.empty-row td { visibility: hidden !important; }
+    tr.empty-row { border-bottom: none !important; }
+    tr.note-row input.item-name:placeholder-shown { display: none !important; }
+  }
     
     .nota-card { 
       box-shadow: none !important; 
