@@ -329,7 +329,7 @@
   .footer-left-group {
     display: flex;
     flex-direction: column;
-    margin-top: 76px; /* Posisi awal disesuaikan dengan garis tanda tangan */
+    margin-top: 76px;
     transition: margin-top 0.15s ease;
     flex: 1;
     max-width: 420px;
@@ -514,14 +514,26 @@
   .modal-input { border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; font-size: 12px; font-family: inherit; }
   .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 5px; }
 
-  @media screen and (max-width: 480px) {
-    .nota-card { padding: 12px 10px; }
+  @media screen and (max-width: 540px) {
+    html, body { overflow-x: hidden; width: 100%; }
+    .nota-card { padding: 12px 8px; overflow: hidden; }
     
+    .action-bar { gap: 5px; }
+    .btn { padding: 8px 6px; font-size: 11px; }
+
+    .header { gap: 8px; }
+    .logo-img { height: 58px; }
+    .store-info { min-width: 115px; }
+    .store-info h2 { font-size: 19px; }
+    .store-info p { font-size: 9.5px; white-space: normal; }
+    .nota-title { font-size: 20px; }
+    .date-box-dropdown, .date-box-dropdown select { font-size: 10.5px; }
+
     .cust-field { 
       flex-direction: column; 
       align-items: flex-start; 
       gap: 2px; 
-      min-width: 130px; 
+      min-width: 120px; 
     }
     .cust-field label { margin-bottom: 2px; }
 
@@ -546,6 +558,26 @@
       white-space: normal; 
       word-break: break-word; 
     }
+
+    .footer-layout { gap: 8px; }
+    .footer-left-group { min-width: 0; }
+    .footer-dropdown-row { 
+      flex-direction: column; 
+      align-items: flex-start; 
+      gap: 3px; 
+    }
+    .footer-dropdown-row select { 
+      width: 100%; 
+      max-width: 100%; 
+      min-width: 0;
+      font-size: 10px; 
+    }
+    .payment-info-box { font-size: 9.5px; padding: 5px 6px; }
+    .pay-grid { grid-template-columns: 42px 6px 1fr; font-size: 9.5px; }
+    .pay-num { font-size: 10.5px; }
+    .footer-text { font-size: 9.5px; padding: 5px 6px; }
+    .signature-box { width: 112px; font-size: 10.5px; }
+    .store-sign-name { font-size: 11px; }
   }
 
   @media print {
