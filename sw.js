@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nota-toko-v2';
+const CACHE_NAME = 'nota-toko-v3';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
